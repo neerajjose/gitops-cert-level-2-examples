@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: many-apps-application-set
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/neerajjose/gitops-cert-level-2-examples.git
+      revision: HEAD
+      directories:
+      - path: application-sets/example-apps/*
+  template:      
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      # The project the application belongs to.
+      project: default
+	@@ -22,12 +21,12 @@ spec:
+      source:
+        repoURL: https://github.com/neerajjose/gitops-cert-level-2-examples.git
+        targetRevision: HEAD
+        path: '{{path}}'
+
+      # Destination cluster and namespace to deploy the application
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}'
+      # Sync policy
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true  
+        automated: 
+          prune: true 
+          selfHeal: true 
