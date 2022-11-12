@@ -16,20 +16,22 @@ spec:
     spec:
       # The project the application belongs to.
       project: default
-	@@ -22,12 +21,12 @@ spec:
+
+      # Source of the application manifests
       source:
         repoURL: https://github.com/neerajjose/gitops-cert-level-2-examples.git
         targetRevision: HEAD
         path: '{{path}}'
-
+      
       # Destination cluster and namespace to deploy the application
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{path.basename}}'
+
       # Sync policy
       syncPolicy:
         syncOptions:
-        - CreateNamespace=true  
-        automated: 
-          prune: true 
-          selfHeal: true 
+          - CreateNamespace=true  
+        automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+          prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+          selfHeal: true # Specifies if p
